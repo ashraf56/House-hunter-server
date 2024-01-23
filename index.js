@@ -54,7 +54,7 @@ async function run() {
           return res.send({ message: 'Password not valid' })
         }
         const token = jwt.sign({ userId: user._id }, Tokenkey, { expiresIn: '1h' })
-        res.send({ message: 'log in success' })
+        res.send({token:token, message: 'log in success' })
       } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Error logging in' })
