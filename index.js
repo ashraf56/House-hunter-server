@@ -21,9 +21,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
-   
+
     const alluserCollection = client.db("HouseHunter").collection("users");
-//Registration api
+    //Registration api
     app.post('/users', async (req, res) => {
 
       let { name, number, email, password, role } = req.body
@@ -38,30 +38,30 @@ async function run() {
       res.send(result)
     })
 
-//log ins api
+    //log ins api
 
-app.post('/loggeduser', async (req,res)=>{
+    app.post('/loggeduser', async (req, res) => {
 
-try {
-  const {email,password}  = req.body;
-  const user = await alluserCollection.findOne({email})
-  if (!user) {
-    return res.send({message:'user not valid'})
-  }
+      try {
+        const { email, password } = req.body;
+        const user = await alluserCollection.findOne({ email })
+        if (!user) {
+          return res.send({ message: 'user not valid' })
+        }
 
-  const isPasswordOK= await bcrypt.compare(password,user.hashpassword)
-  if (!isPasswordOK) {
-    return res.send ({message:'Password not valid'})
-  }
-const token = jwt.sign({userId:user._id},Tokenkey,{expiresIn:'1h'})
-res.send({message:'log in success'})
-} catch (error) {
-  console.log(error);
-  res.status(500).json({ error: 'Error logging in' })
-}
+        const isPasswordOK = await bcrypt.compare(password, user.hashpassword)
+        if (!isPasswordOK) {
+          return res.send({ message: 'Password not valid' })
+        }
+        const token = jwt.sign({ userId: user._id }, Tokenkey, { expiresIn: '1h' })
+        res.send({ message: 'log in success' })
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Error logging in' })
+      }
 
 
-})
+    })
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
