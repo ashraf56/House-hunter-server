@@ -41,6 +41,21 @@ async function run() {
       const result = await alluserCollection.find().toArray()
       res.send(result)
     })
+    app.get('/alluser/owner/:email', async (req, res) => {
+      let email = req.params.email
+
+      let query = { email: email }
+      const user = await alluserCollection.findOne(query)
+      let result = { role: user?.role == 'owner' }
+      res.send(result)
+    })
+    app.get('/alluser/:email', async (req, res) => {
+      let email = req.params.email
+      let query = { email: email }
+      const user = await alluserCollection.findOne(query)
+
+      res.send(user)
+    })
 
     //log ins api
 
@@ -58,7 +73,7 @@ async function run() {
           return res.send({ message: 'Password not valid' })
         }
         const token = jwt.sign({ userId: user._id }, Tokenkey, { expiresIn: '1h' })
-        res.send({ token: token, message: 'log in success' })
+        res.send({ email: user.email, token: token, message: 'log in success' })
       } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Error logging in' })
